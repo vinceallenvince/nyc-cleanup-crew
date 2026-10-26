@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Monster Poop</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #000; }
+  figure { position: relative; margin: 0; }
+  img { display: block; width: 100%; height: auto; }
+  figcaption { position: absolute; left: 8px; bottom: 8px; padding: 3px 8px;
+               border-radius: 4px; background: rgba(0,0,0,.55); color: #fff;
+               font: 12px -apple-system, system-ui, sans-serif; }
+  figcaption:empty { display: none; }
+  #status { color: #999; font: 14px -apple-system, system-ui, sans-serif;
+            padding: 16px; margin: 0; }
+</style>
+</head>
+<body>
+<p id="status">Loading…</p>
+<main id="feed"></main>
+<script>
+  const REPO = "vinceallenvince/nyc-cleanup-crew";
+  const API = `https://api.github.com/repos/${REPO}/contents/transformed`;
+  const feed = document.getElementById("feed");
+  const status = document.getElementById("status");
+  const isImg = f => f.type === "file" && /\.(png|jpe?g|webp)$/i.test(f.name);
+
+  fetch(API)
+    .then(r => { if (r.status === 404) return []; if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(files => {
+      const items = files.filter(isImg).sort((a, b) => b.name.localeCompare(a.name)); // newest first
+      if (!items.length) { status.textContent = "No investigations yet."; return; }
+      status.remove();
+      for (const f of items) {
+        const fig = document.createElement("figure");
+        const img = document.createElement("img");
+        const cap = document.createElement("figcaption");
+        img.src = f.download_url;
+        img.alt = f.name;
+        img.loading = "lazy";
+        // A "--flux" suffix marks the FLUX render of the same photo.
+        if (/--flux\.\w+$/.test(f.name)) cap.textContent = "FLUX";
+        fig.append(img, cap);
+        feed.appendChild(fig);
+      }
+    })
+    .catch(e => { status.textContent = "Couldn't load images (" + e.message + "). Try again in a minute."; });
+</script>
+</body>
+</html>

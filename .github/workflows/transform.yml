@@ -1,0 +1,72 @@
+name: Transform poop
+
+on:
+  push:
+    branches: [main]
+    paths: ["photos/**"]
+  workflow_dispatch:
+    inputs:
+      renderers:
+        description: "Renderers, comma-separated: openai, flux (blank = repo RENDERERS variable, else openai)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: transform-poop
+  cancel-in-progress: false
+
+jobs:
+  transform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: pip install openai requests pillow
+
+      - name: Transform new photos
+        id: transform
+        env:
+          RENDERERS: ${{ inputs.renderers || vars.RENDERERS || 'openai' }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
+          BARK_KEY: ${{ secrets.BARK_KEY }}
+          IMAGE_MODEL: gpt-image-2.5-sunburst
+          REPLICATE_API_KEY: ${{ secrets.REPLICATE_API_KEY }}
+          FLUX_MODEL: ${{ vars.FLUX_MODEL || 'black-forest-labs/flux-2-max' }}
+        run: python scripts/transform.py
+
+      - name: Commit results and notify
+        env:
+          BARK_KEY: ${{ secrets.BARK_KEY }}
+          TITLE: ${{ steps.transform.outputs.title }}
+          OUT_PATHS: ${{ steps.transform.outputs.paths }}
+        run: |
+          git config user.name "poop-bot"
+          git config user.email "poop-bot@users.noreply.github.com"
+          git add transformed classifications
+          if git diff --cached --quiet; then
+            echo "Nothing new to commit"
+            exit 0
+          fi
+          git commit -m "Investigate poop"
+          git pull --rebase
+          git push
+
+          [ -n "$BARK_KEY" ] || exit 0
+          for out in $OUT_PATHS; do
+            case "$out" in *--flux.png) label="FLUX" ;; *) label="OpenAI" ;; esac
+            curl -s -X POST "https://api.day.app/$BARK_KEY" \
+              --data-urlencode "title=$TITLE · $label" \
+              --data-urlencode "body=Tap to see it" \
+              --data-urlencode "url=https://raw.githubusercontent.com/vinceallenvince/nyc-cleanup-crew/main/$out" \
+              --data-urlencode "group=poop" \
+              --data-urlencode "level=timeSensitive" > /dev/null
+          done
