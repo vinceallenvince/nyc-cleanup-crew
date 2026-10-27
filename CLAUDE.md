@@ -30,6 +30,7 @@ The workflow then commits, pushes, and sends the success push through Bark. `ind
 - **Typesafe image API:** every request needs `TypeSafe-Danger-Zone-Images: true`. Images must be PNG or JPEG, 280–1568 px per side; `jpeg_for_typesafe()` handles this. Docs: https://docs.typesafe.ai/images
 - **Bark:** POST to `https://api.day.app/<BARK_KEY>` with `title`, `body`, `url`, `group`, `level=timeSensitive`.
 - **Idempotency:** a photo is done once every renderer's output exists, or once its classification has `poop: none`. To regenerate, delete the PNG. To force a rejected photo through, delete the JSON.
+- **Publishing (vinceallen.com):** the gallery's Publish link opens an issue titled `publish transformed/poop-….png` (or `unpublish …`). `.github/workflows/publish.yml` (owner's issues only) runs `scripts/publish.py`, which copies the render to `published/` and records it in `published.json`, newest first. vinceallen.com reads that manifest. `transformed/` is never touched.
 - **Cost guard:** `MAX_PER_RUN = 1`. Don't raise it without asking.
 - **No loops:** bot commits use `GITHUB_TOKEN`, so they don't retrigger the workflow. The workflow does `git pull --rebase` before pushing.
 - **Hardcoded repo path:** `vinceallenvince/nyc-cleanup-crew` appears in `index.html`, `scripts/transform.py`, the workflow, and the iOS Shortcut.
