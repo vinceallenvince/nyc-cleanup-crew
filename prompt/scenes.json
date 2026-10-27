@@ -1,0 +1,28 @@
+{
+  "investigation": {
+    "default": true,
+    "when": {
+      "position": [
+        "left",
+        "right"
+      ]
+    },
+    "placement": {
+      "left": "The poop is on the left side of the frame. Place the gas-mask pigeon between the poop and the left edge of the frame. Place the curious pigeon, the equipment case, and the camera on the right side of the poop, using the open space on the right to balance the composition.",
+      "right": "The poop is on the right side of the frame. Place the gas-mask pigeon between the poop and the right edge of the frame. Place the curious pigeon, the equipment case, and the camera on the left side of the poop, using the open space on the left to balance the composition."
+    }
+  },
+  "accident": {
+    "when": {
+      "position": [
+        "middle"
+      ]
+    },
+    "placement": {
+      "middle": [
+        "The poop is near the middle of the frame. The Hazardous-Material Specialist lies on the left side of the poop. The equipment line (the case, the camera on its tripod, and the detector) sits on the right side of the poop.",
+        "The poop is near the middle of the frame. The Hazardous-Material Specialist lies on the right side of the poop. The equipment line (the case, the camera on its tripod, and the detector) sits on the left side of the poop."
+      ]
+    }
+  }
+}
