@@ -9,7 +9,7 @@ Forked from [walk-and-hack](https://github.com/vinceallenvince/walk-and-hack).
 1. **Post:** The **Post Poop** iOS Shortcut commits the photo to `photos/poop-<timestamp>.jpg` through the GitHub Contents API.
 2. **Classify:** The push triggers a GitHub Action. [Typesafe](https://docs.typesafe.ai/images) (Jev) answers three questions: is there poop, where the most prominent group sits in the frame (left, middle, right), and day or night.
 3. **Gate:** No poop gets a "No poop detected." push, and the run stops. More than one is fine: the prompt focuses on the most prominent group.
-4. **Place:** The position picks a paragraph from `prompt/placement.json`. The gas-mask pigeon goes between the poop and the nearer frame edge; the curious pigeon and the equipment take the open side. Middle picks a side, seeded by filename.
+4. **Place:** The position picks a paragraph from `prompt/placement.json`. The gas-mask pigeon goes between the poop and the nearer frame edge; the curious pigeon and the equipment take the open side. Middle is the accident scene: the gas-mask pigeon has passed out on its back, mask on the ground, and the curious pigeon strides toward the camera, looking into the lens.
 5. **Transform:** OpenAI's image edit (and optionally FLUX) renders `prompt/prompt.md` with that placement filled in, plus a floodlight from `prompt/lighting.json` at night.
 6. **Deliver:** The result is committed to `transformed/`, and a [Bark](https://github.com/Finb/Bark) push opens it when tapped.
 7. **Browse:** Everything appears in the [gallery](https://vinceallenvince.github.io/nyc-cleanup-crew/) (GitHub Pages, `index.html`).
@@ -23,7 +23,7 @@ Forked from [walk-and-hack](https://github.com/vinceallenvince/walk-and-hack).
 | `transformed/` | Results (PNG). `<name>--flux.png` is the FLUX render. |
 | `prompt/prompt.md` | Image prompt with `{{PLACEMENT}}` and `{{LIGHTING}}` placeholders |
 | `prompt/lighting.json` | Lighting paragraph for `day` (empty) and `night` (floodlight) |
-| `prompt/placement.json` | Placement paragraph per position (`left`, `right`, `middle` as a list) |
+| `prompt/placement.json` | Placement paragraph per position (`left`, `right`; `middle` is the accident scene, a list of two mirrored versions) |
 | `scripts/transform.py` | Classify → gate → place → transform |
 | `.github/workflows/transform.yml` | Runs the script on every push to `photos/`, then commits and notifies |
 | `index.html` | The gallery |

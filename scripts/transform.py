@@ -159,10 +159,13 @@ def classify(path: pathlib.Path) -> dict:
 
 
 def pick_placement(stem: str, position) -> str:
-    """Placement text for the poop's position. Middle picks a side, seeded by
-    filename so re-runs match. Unknown position counts as middle."""
-    value = PLACEMENT.get(position) or PLACEMENT["middle"]
-    return value if isinstance(value, str) else random.Random(stem).choice(value)
+    """Placement text for the poop's position. A list picks one, seeded by
+    filename so re-runs match. Unknown position picks left or right."""
+    rng = random.Random(stem)
+    if position not in PLACEMENT:
+        position = rng.choice(["left", "right"])
+    value = PLACEMENT[position]
+    return value if isinstance(value, str) else rng.choice(value)
 
 
 def build_prompt(placement: str, lighting: str) -> str:
