@@ -1,0 +1,37 @@
+{
+  "poop": "present",
+  "position": "middle",
+  "light": "night",
+  "raw": {
+    "poop": {
+      "type": "choice",
+      "choice": "present",
+      "confidence": 0.98,
+      "probabilities": {
+        "present": 0.99,
+        "none": 0.01
+      }
+    },
+    "position": {
+      "type": "choice",
+      "choice": "middle",
+      "confidence": 0.94,
+      "probabilities": {
+        "left": 0.04,
+        "middle": 0.96,
+        "right": 0.0
+      }
+    },
+    "light": {
+      "type": "choice",
+      "choice": "night",
+      "confidence": 1.0,
+      "probabilities": {
+        "day": 0.0,
+        "night": 1.0
+      }
+    }
+  },
+  "placement": "ACCIDENT SCENE. The poop is near the middle of the frame, and the investigation has gone wrong. Where this conflicts with the poses, gas-mask rules, or gaze rules in sections 2, 5, 6, 11, 12, and 14, this section wins.\n\nThe Hazardous-Material Specialist has passed out face up on the pavement on the right side of the poop. It looks unconscious, not injured: no blood, no visible harm, feathers intact, still wearing its yellow vest. Its gas mask has come off and lies on the pavement nearby, between the bird and the poop.\n\nThe equipment line (the case, the camera on its tripod, and the detector) sits on the left side of the poop. The Curious Investigator has left its post: it stands in front of the equipment line, closer to the camera, caught mid-stride toward the viewer, and looks directly into the lens, as though walking up to report the incident. Its pose and expression stay natural and pigeon-like, never human.\n\nThe poop stays clearly visible in the middle, inside the evidence markers.",
+  "lighting": "### Floodlight\n\nThis photograph was taken at night. Include a compact portable LED work floodlight on a small folding stand among the equipment near the first pigeon, aimed at the investigation area.\n\nThe floodlight casts a localized pool of bright, slightly cool light over the poop, the evidence markers, and both pigeons, with realistic falloff, hard-edged shadows, and specular highlights on the equipment. Outside that pool, keep the original night lighting of the photograph unchanged.\n\nThe floodlight should look like real professional field equipment, clean and realistically maintained."
+}
