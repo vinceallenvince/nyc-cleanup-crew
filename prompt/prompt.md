@@ -339,6 +339,8 @@ The camera should be positioned near the equipment perimeter and aimed toward th
 
 It should resemble a realistic field-documentation camera rather than a toy.
 
+The camera must be physically coherent: the lens is on the front, and the preview screen is on the back, directly opposite the lens. The lens points at the poop, so the screen faces away from it.
+
 The camera and tripod should appear clean and realistically maintained, without intentionally added wear or damage.
 
 ### Environmental detection instrument
