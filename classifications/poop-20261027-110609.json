@@ -1,0 +1,37 @@
+{
+  "poop": "present",
+  "position": "middle",
+  "light": "night",
+  "raw": {
+    "poop": {
+      "type": "choice",
+      "choice": "present",
+      "confidence": 0.98,
+      "probabilities": {
+        "present": 0.99,
+        "none": 0.01
+      }
+    },
+    "position": {
+      "type": "choice",
+      "choice": "middle",
+      "confidence": 0.94,
+      "probabilities": {
+        "left": 0.04,
+        "middle": 0.96,
+        "right": 0.0
+      }
+    },
+    "light": {
+      "type": "choice",
+      "choice": "night",
+      "confidence": 1.0,
+      "probabilities": {
+        "day": 0.0,
+        "night": 1.0
+      }
+    }
+  },
+  "placement": "The poop is near the middle of the frame. Place the gas-mask pigeon on the left side of the poop. Place the curious pigeon, the equipment case, and the camera on the right side of the poop.",
+  "lighting": "### Floodlight\n\nThis photograph was taken at night. Include a compact portable LED work floodlight on a small folding stand among the equipment near the first pigeon, aimed at the investigation area.\n\nThe floodlight casts a localized pool of bright, slightly cool light over the poop, the evidence markers, and both pigeons, with realistic falloff, hard-edged shadows, and specular highlights on the equipment. Outside that pool, keep the original night lighting of the photograph unchanged.\n\nThe floodlight should look like real professional field equipment, clean and realistically maintained."
+}
