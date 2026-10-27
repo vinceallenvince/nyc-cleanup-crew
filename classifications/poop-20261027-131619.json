@@ -1,0 +1,38 @@
+{
+  "poop": "present",
+  "position": "left",
+  "light": "day",
+  "raw": {
+    "poop": {
+      "type": "choice",
+      "choice": "present",
+      "confidence": 0.96,
+      "probabilities": {
+        "present": 0.98,
+        "none": 0.02
+      }
+    },
+    "position": {
+      "type": "choice",
+      "choice": "left",
+      "confidence": 0.97,
+      "probabilities": {
+        "left": 0.98,
+        "middle": 0.02,
+        "right": 0.0
+      }
+    },
+    "light": {
+      "type": "choice",
+      "choice": "day",
+      "confidence": 1.0,
+      "probabilities": {
+        "day": 1.0,
+        "night": 0.0
+      }
+    }
+  },
+  "scene": "investigation",
+  "placement": "The poop is on the left side of the frame. Place the gas-mask pigeon between the poop and the left edge of the frame. Place the curious pigeon, the equipment case, and the camera on the right side of the poop, using the open space on the right to balance the composition.",
+  "lighting": ""
+}
