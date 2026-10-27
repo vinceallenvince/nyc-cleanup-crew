@@ -5,9 +5,11 @@ Stage 1 (Typesafe / Jev): one request, three Choice questions about
     in the frame (left, middle, right), and day or night. Saved in
     classifications/<name>.json.
 Stage 2 (gate): no poop means a Bark push and stop.
-Stage 3 (renderers): fill prompt/prompt.md with the placement for that
-    position (prompt/placement.json) and the lighting (prompt/lighting.json:
-    a floodlight at night, nothing by day) and edit the photo with each renderer in
+Stage 3 (renderers): pick a scene from prompt/scenes.json (first whose
+    `when` matches Jev's answers, else the default), fill prompt/base.md
+    with prompt/scenes/<scene>.md (plus that scene's placement for the
+    position) and the lighting (prompt/lighting.json: a floodlight at night,
+    nothing by day), and edit the photo with each renderer in
     RENDERERS (default "openai"): OpenAI writes transformed/<name>.png,
     FLUX on Replicate writes transformed/<name>--flux.png.
 
@@ -83,13 +85,22 @@ openai_client = OpenAI()
 OUT.mkdir(exist_ok=True)
 CLS.mkdir(exist_ok=True)
 
-TEMPLATE = (PROMPT / "prompt.md").read_text()
-PLACEMENT = json.loads((PROMPT / "placement.json").read_text())
+BASE = (PROMPT / "base.md").read_text()
+SCENES = json.loads((PROMPT / "scenes.json").read_text())
 LIGHTING = json.loads((PROMPT / "lighting.json").read_text())
-if set(re.findall(r"\{\{(\w+)\}\}", TEMPLATE)) != {"PLACEMENT", "LIGHTING"}:
-    raise SystemExit("prompt.md must use exactly {{PLACEMENT}} and {{LIGHTING}}")
-if set(PLACEMENT) != set(QUESTIONS["position"]["criteria"]):
-    raise SystemExit("placement.json keys must match the position options")
+if set(re.findall(r"\{\{(\w+)\}\}", BASE)) != {"SCENE", "LIGHTING"}:
+    raise SystemExit("base.md must use exactly {{SCENE}} and {{LIGHTING}}")
+if sum(1 for sc in SCENES.values() if sc.get("default")) != 1:
+    raise SystemExit("scenes.json needs exactly one default scene")
+for name, sc in SCENES.items():
+    sc["text"] = (PROMPT / "scenes" / f"{name}.md").read_text()
+    if set(re.findall(r"\{\{(\w+)\}\}", sc["text"])) != {"PLACEMENT"}:
+        raise SystemExit(f"scenes/{name}.md must use exactly {{{{PLACEMENT}}}}")
+    for q, options in sc.get("when", {}).items():
+        if set(options) - set(QUESTIONS[q]["criteria"]):
+            raise SystemExit(f"scenes.json {name}: unknown {q} options {options}")
+        if q == "position" and set(options) - set(sc["placement"]):
+            raise SystemExit(f"scenes.json {name}: no placement for {options}")
 if set(LIGHTING) != set(QUESTIONS["light"]["criteria"]):
     raise SystemExit("lighting.json keys must match the light options")
 
@@ -158,18 +169,29 @@ def classify(path: pathlib.Path) -> dict:
     return result
 
 
-def pick_placement(stem: str, position) -> str:
-    """Placement text for the poop's position. A list picks one, seeded by
-    filename so re-runs match. Unknown position picks left or right."""
+def pick_scene(result: dict) -> str:
+    """First scene whose `when` matches Jev's answers, else the default."""
+    for name, sc in SCENES.items():
+        when = sc.get("when")
+        if when and all(result.get(q) in options for q, options in when.items()):
+            return name
+    return next(name for name, sc in SCENES.items() if sc.get("default"))
+
+
+def pick_placement(stem: str, scene: str, position) -> str:
+    """The scene's placement text for the poop's position. A list picks one,
+    seeded by filename so re-runs match. Unknown position picks at random."""
     rng = random.Random(stem)
-    if position not in PLACEMENT:
-        position = rng.choice(["left", "right"])
-    value = PLACEMENT[position]
+    placement = SCENES[scene]["placement"]
+    if position not in placement:
+        position = rng.choice(sorted(placement))
+    value = placement[position]
     return value if isinstance(value, str) else rng.choice(value)
 
 
-def build_prompt(placement: str, lighting: str) -> str:
-    prompt = TEMPLATE.replace("{{PLACEMENT}}", placement).replace("{{LIGHTING}}", lighting)
+def build_prompt(scene: str, placement: str, lighting: str) -> str:
+    scene_text = SCENES[scene]["text"].replace("{{PLACEMENT}}", placement)
+    prompt = BASE.replace("{{SCENE}}", scene_text.strip()).replace("{{LIGHTING}}", lighting)
     if "{{" in prompt:
         raise RuntimeError("unfilled placeholder in prompt")
     return prompt
@@ -283,10 +305,12 @@ for src in todo:
             print("   no classification, transforming with defaults")
 
         # Stage 3: render with each renderer that hasn't produced output yet
-        result["placement"] = pick_placement(src.stem, position)
+        result["scene"] = pick_scene(result)
+        result["placement"] = pick_placement(src.stem, result["scene"], position)
         result["lighting"] = LIGHTING.get(result.get("light")) or LIGHTING["day"]
         cls_file.write_text(json.dumps(result, indent=2))
-        prompt = build_prompt(result["placement"], result["lighting"])
+        print(f"   scene: {result['scene']}")
+        prompt = build_prompt(result["scene"], result["placement"], result["lighting"])
         made, errors = [], 0
         for renderer in RENDERERS:
             dest = output_path(src.stem, renderer)

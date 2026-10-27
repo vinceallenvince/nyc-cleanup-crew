@@ -14,16 +14,17 @@ iOS Shortcut ("Post Poop") → GitHub Contents API → `photos/poop-yyyyMMdd-HHm
 
 1. Classify with Typesafe/Jev: `poop` (present, none) `position` of the most prominent group (left, middle, right), and `light` (day, night).
 2. Gate: no poop sends a Bark push and stops. Multiple poops are fine; the prompt targets the most prominent group.
-3. Pick the placement paragraph for the position from `prompt/placement.json` (middle: the accident scene, mirrored by a seeded choice; unknown: left or right).
-4. Fill `{{PLACEMENT}}` and `{{LIGHTING}}` (from `prompt/lighting.json`: floodlight at night, empty by day) in `prompt/prompt.md` and run each renderer.
+3. Pick the scene from `prompt/scenes.json`: the first whose `when` matches Jev's answers, else the default (investigation). Middle is the accident scene. Then the scene's placement text for the position (a list is a seeded choice; unknown position picks one).
+4. Fill `{{SCENE}}` (from `prompt/scenes/<scene>.md`, with its `{{PLACEMENT}}`) and `{{LIGHTING}}` (from `prompt/lighting.json`: floodlight at night, empty by day) in `prompt/base.md` and run each renderer.
 5. Write `transformed/<stem>.png` (FLUX: `<stem>--flux.png`).
 
 The workflow then commits, pushes, and sends the success push through Bark. `index.html`, served by GitHub Pages, lists `transformed/` through the GitHub API.
 
 ## Key facts
 
-- **No creative content in Python.** The prompt and placement text live in `prompt/`.
-- **Placement rule:** the gas-mask pigeon goes between the poop and the nearer frame edge; the curious pigeon and equipment take the open side. Middle is the accident scene: it overrides the prompt's pose and gas-mask rules.
+- **No creative content in Python.** The prompt, scenes, and placement text live in `prompt/`.
+- **Scenes:** `base.md` holds only what every scene shares; anything about poses or roles goes in the scene file. Adding a scene means adding `scenes/<name>.md` and an entry in `scenes.json`.
+- **Placement rule:** the gas-mask pigeon goes between the poop and the nearer frame edge; the curious pigeon and equipment take the open side.
 - **Secrets:** `OPENAI_API_KEY`, `TYPESAFE_API_KEY`, `BARK_KEY`, `REPLICATE_API_KEY`. Never print secrets. Action logs are public.
 - **Models:** image edit uses `IMAGE_MODEL` (workflow, currently `gpt-image-2.5-sunburst`). FLUX uses `FLUX_MODEL` on Replicate (default `black-forest-labs/flux-2-max`, FLUX.2 only). `RENDERERS` (default `openai`) picks which run. Classification uses `jev-latest`.
 - **Typesafe image API:** every request needs `TypeSafe-Danger-Zone-Images: true`. Images must be PNG or JPEG, 280–1568 px per side; `jpeg_for_typesafe()` handles this. Docs: https://docs.typesafe.ai/images
