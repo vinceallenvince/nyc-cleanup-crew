@@ -51,11 +51,14 @@ TYPESAFE_KEY = os.environ.get("TYPESAFE_API_KEY")
 
 QUESTIONS = {
     "count": {
-        "instructions": "How many separate pieces or clusters of dog poop are in `photo`?",
+        "instructions": "How many separate groups of dog poop are in `photo`? "
+                        "A group is one main pile plus any small crumbs or fragments near it.",
         "criteria": {
             "none": "There is no dog poop in the photo.",
-            "one": "There is exactly one piece or one cluster of dog poop.",
-            "multiple": "There are two or more separate pieces or clusters of dog poop.",
+            "one": "There is one group of dog poop. Small crumbs or fragments near the "
+                   "main pile are part of the same group.",
+            "multiple": "There are two or more groups of dog poop, each with its own main "
+                        "pile, clearly apart from each other.",
         },
     },
     "position": {
