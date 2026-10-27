@@ -1,11 +1,13 @@
 """Classify, then transform, every poop photo that hasn't been handled yet.
 
-Stage 1 (Typesafe / Jev): one request, two Choice questions about
-    photos/<name>.jpg — is there poop, and where the most prominent group is
-    in the frame (left, middle, right). Saved in classifications/<name>.json.
+Stage 1 (Typesafe / Jev): one request, three Choice questions about
+    photos/<name>.jpg — is there poop, where the most prominent group is
+    in the frame (left, middle, right), and day or night. Saved in
+    classifications/<name>.json.
 Stage 2 (gate): no poop means a Bark push and stop.
 Stage 3 (renderers): fill prompt/prompt.md with the placement for that
-    position (prompt/placement.json) and edit the photo with each renderer in
+    position (prompt/placement.json) and the lighting (prompt/lighting.json:
+    a floodlight at night, nothing by day) and edit the photo with each renderer in
     RENDERERS (default "openai"): OpenAI writes transformed/<name>.png,
     FLUX on Replicate writes transformed/<name>--flux.png.
 
@@ -65,6 +67,13 @@ QUESTIONS = {
             "right": "In the right third of the frame.",
         },
     },
+    "light": {
+        "instructions": "When was `photo` taken?",
+        "criteria": {
+            "day": "Daytime, dusk, or dawn: natural daylight lights the scene.",
+            "night": "Night: the sky is dark and the scene is lit by streetlights or other artificial light.",
+        },
+    },
 }
 REJECT = {"none": "No poop detected."}
 
@@ -76,10 +85,13 @@ CLS.mkdir(exist_ok=True)
 
 TEMPLATE = (PROMPT / "prompt.md").read_text()
 PLACEMENT = json.loads((PROMPT / "placement.json").read_text())
-if set(re.findall(r"\{\{(\w+)\}\}", TEMPLATE)) != {"PLACEMENT"}:
-    raise SystemExit("prompt.md must use exactly one placeholder, {{PLACEMENT}}")
+LIGHTING = json.loads((PROMPT / "lighting.json").read_text())
+if set(re.findall(r"\{\{(\w+)\}\}", TEMPLATE)) != {"PLACEMENT", "LIGHTING"}:
+    raise SystemExit("prompt.md must use exactly {{PLACEMENT}} and {{LIGHTING}}")
 if set(PLACEMENT) != set(QUESTIONS["position"]["criteria"]):
     raise SystemExit("placement.json keys must match the position options")
+if set(LIGHTING) != set(QUESTIONS["light"]["criteria"]):
+    raise SystemExit("lighting.json keys must match the light options")
 
 
 def output_path(stem: str, renderer: str = "openai") -> pathlib.Path:
@@ -153,8 +165,8 @@ def pick_placement(stem: str, position) -> str:
     return value if isinstance(value, str) else random.Random(stem).choice(value)
 
 
-def build_prompt(placement: str) -> str:
-    prompt = TEMPLATE.replace("{{PLACEMENT}}", placement)
+def build_prompt(placement: str, lighting: str) -> str:
+    prompt = TEMPLATE.replace("{{PLACEMENT}}", placement).replace("{{LIGHTING}}", lighting)
     if "{{" in prompt:
         raise RuntimeError("unfilled placeholder in prompt")
     return prompt
@@ -256,7 +268,7 @@ for src in todo:
             result = {"poop": None}
 
         poop, position = result.get("poop"), result.get("position")
-        print(f"   poop: {poop}, position: {position}")
+        print(f"   poop: {poop}, position: {position}, light: {result.get('light')}")
 
         # Stage 2: gate
         if poop in REJECT:
@@ -269,8 +281,9 @@ for src in todo:
 
         # Stage 3: render with each renderer that hasn't produced output yet
         result["placement"] = pick_placement(src.stem, position)
+        result["lighting"] = LIGHTING.get(result.get("light")) or LIGHTING["day"]
         cls_file.write_text(json.dumps(result, indent=2))
-        prompt = build_prompt(result["placement"])
+        prompt = build_prompt(result["placement"], result["lighting"])
         made, errors = [], 0
         for renderer in RENDERERS:
             dest = output_path(src.stem, renderer)

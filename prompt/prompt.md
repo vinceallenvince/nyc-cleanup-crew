@@ -379,6 +379,8 @@ The ruler should be appropriately scaled and positioned as though documenting th
 
 It must not obscure or overlap the poop.
 
+{{LIGHTING}}
+
 ---
 
 ## 9. Equipment Placement and Physical Logic

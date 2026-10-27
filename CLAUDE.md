@@ -12,10 +12,10 @@ Guidance for coding agents working in this repo. See `README.md` for what the ap
 
 iOS Shortcut ("Post Poop") → GitHub Contents API → `photos/poop-yyyyMMdd-HHmmss.jpg` → push triggers `.github/workflows/transform.yml` → `scripts/transform.py`:
 
-1. Classify with Typesafe/Jev: `poop` (present, none) and `position` of the most prominent group (left, middle, right).
+1. Classify with Typesafe/Jev: `poop` (present, none) `position` of the most prominent group (left, middle, right), and `light` (day, night).
 2. Gate: no poop sends a Bark push and stops. Multiple poops are fine; the prompt targets the most prominent group.
 3. Pick the placement paragraph for the position from `prompt/placement.json` (middle: seeded choice of side).
-4. Fill `{{PLACEMENT}}` in `prompt/prompt.md` and run each renderer.
+4. Fill `{{PLACEMENT}}` and `{{LIGHTING}}` (from `prompt/lighting.json`: floodlight at night, empty by day) in `prompt/prompt.md` and run each renderer.
 5. Write `transformed/<stem>.png` (FLUX: `<stem>--flux.png`).
 
 The workflow then commits, pushes, and sends the success push through Bark. `index.html`, served by GitHub Pages, lists `transformed/` through the GitHub API.
