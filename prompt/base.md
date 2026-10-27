@@ -353,7 +353,7 @@ Match the original photograph’s:
 
 The pigeons and equipment must cast physically believable contact shadows.
 
-Their feet should appear firmly planted on the actual pavement.
+Feet on the pavement should appear firmly planted.
 
 Ensure correct scale relationships between the pigeons, poop, evidence markers, and equipment.
 
