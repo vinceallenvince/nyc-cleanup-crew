@@ -1,0 +1,67 @@
+name: Publish
+
+# The gallery's Publish link opens an issue titled
+# "publish transformed/<file>.png" (or "unpublish ..."). Only the repo
+# owner's issues count; anyone else's are ignored.
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+    inputs:
+      command:
+        description: "publish|unpublish transformed/<file>.png"
+        required: true
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.issue.user.login == github.repository_owner &&
+       (startsWith(github.event.issue.title, 'publish ') ||
+        startsWith(github.event.issue.title, 'unpublish ')))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Publish
+        id: publish
+        env:
+          COMMAND: ${{ inputs.command || github.event.issue.title }}
+        run: python3 scripts/publish.py
+
+      - name: Commit
+        env:
+          RESULT: ${{ steps.publish.outputs.result }}
+        run: |
+          git config user.name "poop-bot"
+          git config user.email "poop-bot@users.noreply.github.com"
+          git add published published.json
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+            exit 0
+          fi
+          git commit -m "$RESULT"
+          git pull --rebase
+          git push
+
+      - name: Close issue
+        if: always() && github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.issue.number }}
+          RESULT: ${{ steps.publish.outputs.result }}
+          OUTCOME: ${{ job.status }}
+        run: |
+          if [ "$OUTCOME" = success ]; then
+            gh issue close "$NUMBER" --repo "$GITHUB_REPOSITORY" --comment "$RESULT"
+          else
+            gh issue comment "$NUMBER" --repo "$GITHUB_REPOSITORY" --body "Failed: ${RESULT:-see the Actions run}"
+          fi

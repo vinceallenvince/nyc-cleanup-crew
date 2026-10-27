@@ -12,6 +12,9 @@
                border-radius: 4px; background: rgba(0,0,0,.55); color: #fff;
                font: 12px -apple-system, system-ui, sans-serif; }
   figcaption:empty { display: none; }
+  .pub { position: absolute; right: 8px; top: 8px; padding: 3px 8px;
+         border-radius: 4px; background: rgba(0,0,0,.55); color: #fff;
+         font: 12px -apple-system, system-ui, sans-serif; text-decoration: none; }
   #status { color: #999; font: 14px -apple-system, system-ui, sans-serif;
             padding: 16px; margin: 0; }
 </style>
@@ -20,15 +23,23 @@
 <p id="status">Loading…</p>
 <main id="feed"></main>
 <script>
+  // Each image has a Publish link that opens a prefilled issue;
+  // .github/workflows/publish.yml does the rest.
   const REPO = "vinceallenvince/nyc-cleanup-crew";
   const API = `https://api.github.com/repos/${REPO}/contents/transformed`;
+  const RAW = `https://raw.githubusercontent.com/${REPO}/main`;
   const feed = document.getElementById("feed");
   const status = document.getElementById("status");
   const isImg = f => f.type === "file" && /\.(png|jpe?g|webp)$/i.test(f.name);
 
+  // Published files, read from published.json (raw URL, may lag ~5 min).
+  const published = fetch(`${RAW}/published.json`)
+    .then(r => r.ok ? r.json() : []).then(items => new Set(items.map(i => i.file))).catch(() => new Set());
+
   fetch(API)
     .then(r => { if (r.status === 404) return []; if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then(files => {
+    .then(files => published.then(pub => [files, pub]))
+    .then(([files, pub]) => {
       const items = files.filter(isImg).sort((a, b) => b.name.localeCompare(a.name)); // newest first
       if (!items.length) { status.textContent = "No investigations yet."; return; }
       status.remove();
@@ -41,11 +52,22 @@
         img.loading = "lazy";
         // A "--flux" suffix marks the FLUX render of the same photo.
         if (/--flux\.\w+$/.test(f.name)) cap.textContent = "FLUX";
-        fig.append(img, cap);
+        fig.append(img, cap, publishLink(f.path, pub));
         feed.appendChild(fig);
       }
     })
     .catch(e => { status.textContent = "Couldn't load images (" + e.message + "). Try again in a minute."; });
+
+  function publishLink(path, pub) {
+    const isPub = pub.has(`published/${path.split("/").pop()}`);
+    const a = document.createElement("a");
+    a.className = "pub";
+    a.textContent = isPub ? "Published ✓ · Unpublish" : "Publish";
+    a.href = `https://github.com/${REPO}/issues/new?title=` +
+      encodeURIComponent(`${isPub ? "unpublish" : "publish"} ${path}`);
+    a.target = "_blank";
+    return a;
+  }
 </script>
 </body>
 </html>
