@@ -1,0 +1,26 @@
+{
+  "poop": "present",
+  "position": "middle",
+  "raw": {
+    "poop": {
+      "type": "choice",
+      "choice": "present",
+      "confidence": 0.98,
+      "probabilities": {
+        "present": 0.99,
+        "none": 0.01
+      }
+    },
+    "position": {
+      "type": "choice",
+      "choice": "middle",
+      "confidence": 0.98,
+      "probabilities": {
+        "left": 0.0,
+        "middle": 0.99,
+        "right": 0.01
+      }
+    }
+  },
+  "placement": "The poop is near the middle of the frame. Place the gas-mask pigeon on the right side of the poop. Place the curious pigeon, the equipment case, and the camera on the left side of the poop."
+}
