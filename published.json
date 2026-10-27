@@ -1,5 +1,11 @@
 [
   {
+    "file": "published/poop-20261027-141826.png",
+    "created": "2026-10-27T14:18:26",
+    "renderer": "openai",
+    "scene": "accident"
+  },
+  {
     "file": "published/poop-20261027-102310.png",
     "created": "2026-10-27T10:23:10",
     "renderer": "openai",
