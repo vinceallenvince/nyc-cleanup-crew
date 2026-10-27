@@ -1,9 +1,9 @@
 """Classify, then transform, every poop photo that hasn't been handled yet.
 
 Stage 1 (Typesafe / Jev): one request, two Choice questions about
-    photos/<name>.jpg — how many poops, and where the poop is in the frame
-    (left, middle, right). Saved in classifications/<name>.json.
-Stage 2 (gate): exactly one poop, or a Bark push and stop.
+    photos/<name>.jpg — is there poop, and where the most prominent group is
+    in the frame (left, middle, right). Saved in classifications/<name>.json.
+Stage 2 (gate): no poop means a Bark push and stop.
 Stage 3 (renderers): fill prompt/prompt.md with the placement for that
     position (prompt/placement.json) and edit the photo with each renderer in
     RENDERERS (default "openai"): OpenAI writes transformed/<name>.png,
@@ -50,19 +50,15 @@ TYPESAFE_KEY = os.environ.get("TYPESAFE_API_KEY")
 # --- What Jev classifies. Option names are what come back. -----------------
 
 QUESTIONS = {
-    "count": {
-        "instructions": "How many separate groups of dog poop are in `photo`? "
-                        "A group is one main pile plus any small crumbs or fragments near it.",
+    "poop": {
+        "instructions": "Is there any dog poop in `photo`?",
         "criteria": {
+            "present": "There is at least one piece of dog poop in the photo.",
             "none": "There is no dog poop in the photo.",
-            "one": "There is one group of dog poop. Small crumbs or fragments near the "
-                   "main pile are part of the same group.",
-            "multiple": "There are two or more groups of dog poop, each with its own main "
-                        "pile, clearly apart from each other.",
         },
     },
     "position": {
-        "instructions": "Where is the dog poop horizontally in the frame of `photo`?",
+        "instructions": "Where is the most prominent group of dog poop horizontally in the frame of `photo`?",
         "criteria": {
             "left": "In the left third of the frame.",
             "middle": "In the middle third of the frame.",
@@ -70,10 +66,7 @@ QUESTIONS = {
         },
     },
 }
-REJECT = {
-    "none": "No poop detected.",
-    "multiple": "More than one poop.",
-}
+REJECT = {"none": "No poop detected."}
 
 # ---------------------------------------------------------------------------
 
@@ -97,7 +90,7 @@ def is_done(p: pathlib.Path) -> bool:
     if all(output_path(p.stem, r).exists() for r in RENDERERS):
         return True
     cls_file = CLS / f"{p.stem}.json"
-    return cls_file.exists() and json.loads(cls_file.read_text()).get("count") in REJECT
+    return cls_file.exists() and json.loads(cls_file.read_text()).get("poop") in REJECT
 
 
 def jpeg_for_typesafe(path: pathlib.Path) -> str:
@@ -260,18 +253,18 @@ for src in todo:
         elif TYPESAFE_KEY:
             result = classify(src)
         else:
-            result = {"count": None}
+            result = {"poop": None}
 
-        count, position = result.get("count"), result.get("position")
-        print(f"   count: {count}, position: {position}")
+        poop, position = result.get("poop"), result.get("position")
+        print(f"   poop: {poop}, position: {position}")
 
         # Stage 2: gate
-        if count in REJECT:
+        if poop in REJECT:
             cls_file.write_text(json.dumps(result, indent=2))
-            print(f"   rejected: {REJECT[count]}")
-            notify_rejected(src, REJECT[count])
+            print(f"   rejected: {REJECT[poop]}")
+            notify_rejected(src, REJECT[poop])
             continue
-        if count is None:
+        if poop is None:
             print("   no classification, transforming with defaults")
 
         # Stage 3: render with each renderer that hasn't produced output yet

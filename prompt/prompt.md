@@ -53,6 +53,8 @@ The composition should establish two distinct roles:
 
 ### Placement in this photograph
 
+If the photograph contains more than one piece or group of dog poop, the investigation focuses on the most prominent group. Leave any other poop exactly as photographed, outside the investigation area.
+
 {{PLACEMENT}}
 
 Surround the poop with a miniature environmental investigation setup, including evidence markers, scientific instruments, a camera, and containment equipment.

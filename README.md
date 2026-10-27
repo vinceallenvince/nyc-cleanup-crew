@@ -7,8 +7,8 @@ Forked from [walk-and-hack](https://github.com/vinceallenvince/walk-and-hack).
 ## How it works
 
 1. **Post:** The **Post Poop** iOS Shortcut commits the photo to `photos/poop-<timestamp>.jpg` through the GitHub Contents API.
-2. **Classify:** The push triggers a GitHub Action. [Typesafe](https://docs.typesafe.ai/images) (Jev) answers two questions: how many poops (none, one, multiple), and where the poop sits in the frame (left, middle, right).
-3. **Gate:** Anything but exactly one poop gets a "No poop detected." or "More than one poop." push, and the run stops.
+2. **Classify:** The push triggers a GitHub Action. [Typesafe](https://docs.typesafe.ai/images) (Jev) answers two questions: is there poop, and where the most prominent group sits in the frame (left, middle, right).
+3. **Gate:** No poop gets a "No poop detected." push, and the run stops. More than one is fine: the prompt focuses on the most prominent group.
 4. **Place:** The position picks a paragraph from `prompt/placement.json`. The gas-mask pigeon goes between the poop and the nearer frame edge; the curious pigeon and the equipment take the open side. Middle picks a side, seeded by filename.
 5. **Transform:** OpenAI's image edit (and optionally FLUX) renders `prompt/prompt.md` with that placement filled in.
 6. **Deliver:** The result is committed to `transformed/`, and a [Bark](https://github.com/Finb/Bark) push opens it when tapped.
