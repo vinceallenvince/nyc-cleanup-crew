@@ -1,13 +1,9 @@
-## 5. Scene: Accident
+### Incident
 
-The investigation has gone wrong.
+Something has gone critically wrong, and the pigeons have not noticed yet.
 
-{{PLACEMENT}}
+The environmental detection meter sits in the foreground near the poop, angled toward the camera so its display is clearly visible. Its screen is flooded red, showing a maxed-out reading and a warning triangle, and a small red alarm light on top of the device is lit.
 
-The Hazardous-Material Specialist is taking off in a hurry. It is just a short distance above the pavement beside the poop, fully in frame, wings raised high mid-flap with motion-blurred wingtips, legs dangling, unmasked and still wearing its yellow vest.
+The alarm is confined to the device itself: no glow, smoke, or effects in the air or on the poop, and no words on the screen.
 
-Its gas mask lies abandoned on the pavement just below it, where it was dropped. A single loose feather drifts down nearby or lies on the pavement next to the mask.
-
-The Curious Investigator stands in front of the equipment line, its head tilted back and to one side, looking up at its colleague taking off, perplexed. Its pose and expression stay natural and pigeon-like, never human.
-
-The poop stays clearly visible in the middle, inside the evidence markers.
+Both pigeons carry on exactly as in the standard investigation, calm and absorbed in their work, unaware of the reading. This is the moment just before they realize.

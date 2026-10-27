@@ -23,7 +23,7 @@ The workflow then commits, pushes, and sends the success push through Bark. `ind
 ## Key facts
 
 - **No creative content in Python.** The prompt, scenes, and placement text live in `prompt/`.
-- **Scenes:** `base.md` holds only what every scene shares; anything about poses or roles goes in the scene file. Adding a scene means adding `scenes/<name>.md` and an entry in `scenes.json`.
+- **Scenes:** `base.md` holds only what every scene shares; anything about poses or roles goes in the scene file. Adding a scene means adding `scenes/<name>.md` and an entry in `scenes.json`. A scene with `extends` is its parent's text plus its own (the accident scene extends investigation and only adds the alarm).
 - **Placement rule:** the gas-mask pigeon goes between the poop and the nearer frame edge; the curious pigeon and equipment take the open side.
 - **Secrets:** `OPENAI_API_KEY`, `TYPESAFE_API_KEY`, `BARK_KEY`, `REPLICATE_API_KEY`. Never print secrets. Action logs are public.
 - **Models:** image edit uses `IMAGE_MODEL` (workflow, currently `gpt-image-2.5-sunburst`). FLUX uses `FLUX_MODEL` on Replicate (default `black-forest-labs/flux-2-max`, FLUX.2 only). `RENDERERS` (default `openai`) picks which run. Classification uses `jev-latest`.

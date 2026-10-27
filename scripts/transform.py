@@ -94,6 +94,14 @@ if sum(1 for sc in SCENES.values() if sc.get("default")) != 1:
     raise SystemExit("scenes.json needs exactly one default scene")
 for name, sc in SCENES.items():
     sc["text"] = (PROMPT / "scenes" / f"{name}.md").read_text()
+for name, sc in SCENES.items():
+    # `extends`: this scene is its parent's text plus its own (no chains)
+    if sc.get("extends"):
+        parent = SCENES.get(sc["extends"])
+        if not parent or parent.get("extends"):
+            raise SystemExit(f"scenes.json {name}: bad extends {sc['extends']!r}")
+        sc["text"] = parent["text"].rstrip() + "\n\n" + sc["text"]
+for name, sc in SCENES.items():
     if set(re.findall(r"\{\{(\w+)\}\}", sc["text"])) != {"PLACEMENT"}:
         raise SystemExit(f"scenes/{name}.md must use exactly {{{{PLACEMENT}}}}")
     for q, options in sc.get("when", {}).items():
