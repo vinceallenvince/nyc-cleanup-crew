@@ -1,0 +1,26 @@
+{
+  "count": "multiple",
+  "position": "left",
+  "raw": {
+    "count": {
+      "type": "choice",
+      "choice": "multiple",
+      "confidence": 0.92,
+      "probabilities": {
+        "none": 0.0,
+        "one": 0.05,
+        "multiple": 0.95
+      }
+    },
+    "position": {
+      "type": "choice",
+      "choice": "left",
+      "confidence": 0.41,
+      "probabilities": {
+        "left": 0.61,
+        "middle": 0.38,
+        "right": 0.01
+      }
+    }
+  }
+}
