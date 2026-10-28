@@ -1,8 +1,8 @@
-# nyc-cleanup-crew
+# ooo-photowalk-hazardous-materials
 
 **Monster Poop:** snap some dog poop on a NYC sidewalk. A minute later it's back on your phone, under investigation by two pigeons in hazmat vests, one in a gas mask. A public-awareness nudge for dog owners to clean up.
 
-Forked from [walk-and-hack](https://github.com/vinceallenvince/walk-and-hack).
+Forked from [ooo-photowalk-seasonal](https://github.com/vinceallenvince/ooo-photowalk-seasonal).
 
 ## How it works
 
@@ -12,7 +12,7 @@ Forked from [walk-and-hack](https://github.com/vinceallenvince/walk-and-hack).
 4. **Scene:** `prompt/scenes.json` picks a scene from Jev's answers, plus that scene's placement for the position. The gas-mask pigeon goes between the poop and the nearer frame edge; the curious pigeon and the equipment take the open side. Middle is the accident scene: a standard investigation, except the detector in the foreground is maxed out in red and the pigeons haven't noticed yet.
 5. **Transform:** OpenAI's image edit (and optionally FLUX) renders `prompt/base.md` with the scene from `prompt/scenes/` filled in, plus a floodlight from `prompt/lighting.json` at night.
 6. **Deliver:** The result is committed to `transformed/`, and a [Bark](https://github.com/Finb/Bark) push opens it when tapped.
-7. **Browse:** Everything appears in the [gallery](https://vinceallenvince.github.io/nyc-cleanup-crew/) (GitHub Pages, `index.html`).
+7. **Browse:** Everything appears in the [gallery](https://vinceallenvince.github.io/ooo-photowalk-hazardous-materials/) (GitHub Pages, `index.html`).
 
 ## Repo layout
 
@@ -44,12 +44,12 @@ GitHub Pages: Settings → Pages → Deploy from branch → `main` / root.
 
 ## iOS Shortcut
 
-Duplicate **Post Pigeon** (see the [walk-and-hack README](https://github.com/vinceallenvince/walk-and-hack#ios-shortcut-setup)) and rename it **Post Poop**. Then:
+Duplicate **Post Pigeon** (see the [ooo-photowalk-seasonal README](https://github.com/vinceallenvince/ooo-photowalk-seasonal#ios-shortcut-setup)) and rename it **Post Poop**. Then:
 
-- **Token:** give your fine-grained token access to `nyc-cleanup-crew` too (Contents → Read and write), or make a new one.
+- **Token:** give your fine-grained token access to `ooo-photowalk-hazardous-materials` too (Contents → Read and write), or make a new one.
 - **Delete** the Choose from Menu step (step 6) and its branches. There are no themes.
 - **Text (step 7):** `photos/poop-`**Formatted Date**`.jpg`
-- **URL (step 8):** `https://api.github.com/repos/vinceallenvince/nyc-cleanup-crew/contents/`**Text**
+- **URL (step 8):** `https://api.github.com/repos/vinceallenvince/ooo-photowalk-hazardous-materials/contents/`**Text**
 - **Request body message:** `Add poop`
 - **Notification:** `💩 Posted`
 

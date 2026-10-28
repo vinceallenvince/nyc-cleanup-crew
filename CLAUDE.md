@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Guidance for coding agents working in this repo. See `README.md` for what the app does. Forked from `vinceallenvince/walk-and-hack`; same plumbing, different job.
+Guidance for coding agents working in this repo. See `README.md` for what the app does. Forked from `vinceallenvince/ooo-photowalk-seasonal`; same plumbing, different job.
 
 ## Ownership and style
 
@@ -33,7 +33,7 @@ The workflow then commits, pushes, and sends the success push through Bark. `ind
 - **Publishing (vinceallen.com):** the gallery's Publish link opens an issue titled `publish transformed/poop-….png` (or `unpublish …`). `.github/workflows/publish.yml` (owner's issues only) runs `scripts/publish.py`, which copies the render to `published/` and records it in `published.json`, newest first. vinceallen.com reads that manifest. `transformed/` is never touched.
 - **Cost guard:** `MAX_PER_RUN = 1`. Don't raise it without asking.
 - **No loops:** bot commits use `GITHUB_TOKEN`, so they don't retrigger the workflow. The workflow does `git pull --rebase` before pushing.
-- **Hardcoded repo path:** `vinceallenvince/nyc-cleanup-crew` appears in `index.html`, `scripts/transform.py`, the workflow, and the iOS Shortcut.
+- **Hardcoded repo path:** `vinceallenvince/ooo-photowalk-hazardous-materials` appears in `index.html`, `scripts/transform.py`, the workflow, and the iOS Shortcut.
 
 ## Working on it
 
