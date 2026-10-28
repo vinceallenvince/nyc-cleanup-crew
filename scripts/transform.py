@@ -46,7 +46,7 @@ if not RENDERERS or set(RENDERERS) - set(SUFFIX):
 
 REPLICATE_KEY = os.environ.get("REPLICATE_API_KEY")
 FLUX_MODEL = os.environ.get("FLUX_MODEL", "black-forest-labs/flux-2-max")
-RAW = "https://raw.githubusercontent.com/vinceallenvince/nyc-cleanup-crew/main"
+RAW = "https://raw.githubusercontent.com/vinceallenvince/ooo-photowalk-hazardous-materials/main"
 
 TYPESAFE_URL = "https://api.typesafe.ai/v1/systemone"
 TYPESAFE_KEY = os.environ.get("TYPESAFE_API_KEY")

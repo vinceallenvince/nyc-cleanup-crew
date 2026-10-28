@@ -66,7 +66,7 @@ jobs:
             curl -s -X POST "https://api.day.app/$BARK_KEY" \
               --data-urlencode "title=$TITLE · $label" \
               --data-urlencode "body=Tap to see it" \
-              --data-urlencode "url=https://raw.githubusercontent.com/vinceallenvince/nyc-cleanup-crew/main/$out" \
+              --data-urlencode "url=https://raw.githubusercontent.com/vinceallenvince/ooo-photowalk-hazardous-materials/main/$out" \
               --data-urlencode "group=poop" \
               --data-urlencode "level=timeSensitive" > /dev/null
           done
