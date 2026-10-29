@@ -1,0 +1,38 @@
+{
+  "poop": "present",
+  "position": "middle",
+  "light": "day",
+  "raw": {
+    "poop": {
+      "type": "choice",
+      "choice": "present",
+      "confidence": 0.82,
+      "probabilities": {
+        "present": 0.91,
+        "none": 0.09
+      }
+    },
+    "position": {
+      "type": "choice",
+      "choice": "middle",
+      "confidence": 0.92,
+      "probabilities": {
+        "left": 0.01,
+        "middle": 0.95,
+        "right": 0.04
+      }
+    },
+    "light": {
+      "type": "choice",
+      "choice": "day",
+      "confidence": 1.0,
+      "probabilities": {
+        "day": 1.0,
+        "night": 0.0
+      }
+    }
+  },
+  "scene": "accident",
+  "placement": "The poop is near the middle of the frame. Place the gas-mask pigeon on the right side of the poop. Place the curious pigeon, the equipment case, and the camera on the left side of the poop.",
+  "lighting": ""
+}
